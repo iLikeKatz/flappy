@@ -1,0 +1,100 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <link rel="stylesheet" href="flappy.css">
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Flappy Santa</title>
+</head>
+<body style="height: 100vh; background: #111; text-align: center;">
+    <br>
+    <br>
+    <br>
+    <div id="myModal" class="modal">
+        <div class="modal-restart">
+            <span class="close" onclick="ifno();">&times;</span>  
+            <button class="Restart" onclick="ifyes();">Restart</button>
+            <br>
+            <br>
+            <button class="NO" onclick="ifno();">NOPE</button>
+        </div>
+    </div>
+    <canvas id="c" width="600" height="500" onclick="charactersDY = 8;"></canvas>
+
+    <script>
+        function restartM() {
+            clearInterval(gameLoop); // หยุดการทำงานของ setInterval เก่า (ถ้ามี)
+
+            let modal = document.getElementById('myModal');
+            modal.style.display = "block";
+
+            let closeBtn = modal.getElementsByClassName("close")[0];
+            closeBtn.addEventListener("click", function() {
+                modal.style.display = "none";
+            });
+        }
+
+        const c = document.getElementById("c");
+        const context = c.getContext('2d');
+        const characters = new Image();
+        characters.src = "https://i.pinimg.com/originals/26/30/51/2630512614cb916a4704eff930fc95e3.png"
+        const background = new Image();
+        background.src = "https://images.hdqwalls.com/wallpapers/dark-souls-3-4k-qu.jpg";
+
+        charactersX = charactersDY = score = bestScore = 0;
+        characterSize = 100;
+        pipeWidth = topPipeBottomY = 50;
+        interval = 15; // speed
+        charactersY = pipeGap = 200;
+        canvasSize = pipeX = 600;
+         bestScore = 0;
+
+        const gameLoopFunc = () => {
+            context.drawImage(background, 0, 0, canvasSize, canvasSize); // วาดรูปภาพพื้นหลัง
+            context.drawImage(characters, charactersX, charactersY, characterSize, characterSize); // วาด santa
+            charactersY -= charactersDY -= 0.5; // Gravity
+            context.fillStyle = "brown";
+            pipeX -= 10; // Move pipe
+            pipeX < -pipeWidth && ((pipeX = canvasSize), (topPipeBottomY = pipeGap * Math.random()))
+            // reset pipe and random pipe gap
+            context.fillRect(pipeX, 0, pipeWidth, topPipeBottomY); // Draw top pipe
+            context.fillRect(pipeX, topPipeBottomY + pipeGap, pipeWidth, canvasSize); // Draw bottom pipe
+            context.fillStyle = "white";
+            context.fillText(score++, 10, 15); // Increase and draw score
+            bestScore = bestScore < score ? score : bestScore; // New best score
+            context.fillText(`Best: ${bestScore}`, 10, 25); // Draw best score
+
+            if (((charactersY < topPipeBottomY || charactersY > topPipeBottomY + pipeGap) && pipeX < characterSize)
+            || charactersY > canvasSize) {
+            if (score > bestScore) {
+             bestScore = score;
+            }
+            restartM();
+            }
+        };
+
+        let gameLoop = setInterval(gameLoopFunc, interval);
+
+        function ifno() {
+            let modal = document.getElementById('myModal');
+            modal.style.display = "none";
+        }
+
+        function ifyes() {
+            let modal = document.getElementById('myModal');
+            modal.style.display = "none";
+            
+            charactersX = charactersDY = score = 0;
+            characterSize = 100;
+            pipeWidth = topPipeBottomY = 50;
+            interval = 15; // speed
+            charactersY = pipeGap = 200;
+            canvasSize = pipeX = 600;
+
+            charactersDY = 8; // ทำให้ Flappy Santa กระโดดขึ้น
+            gameLoop = setInterval(gameLoopFunc, interval);
+        }
+    </script>
+    <script src="flappy.js"></script>
+</body>
+</html>
