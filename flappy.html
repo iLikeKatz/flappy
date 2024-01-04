@@ -4,7 +4,7 @@
     <link rel="stylesheet" href="flappy.css">
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>JustFlappy</title>
+    <title>Flappy Santa</title>
 </head>
 <body style="height: 100vh; background: #111; text-align: center;">
     <br>
@@ -22,9 +22,6 @@
     <canvas id="c" width="600" height="500" onclick="charactersDY = 8;"></canvas>
 
     <script>
-        
-
-
         function restartM() {
             clearInterval(gameLoop); // หยุดการทำงานของ setInterval เก่า (ถ้ามี)
 
@@ -44,27 +41,16 @@
         const background = new Image();
         background.src = "https://images.hdqwalls.com/wallpapers/dark-souls-3-4k-qu.jpg";
 
-        function handleScreenSizeChange() {
-    if (window.matchMedia("(max-width: 414px)").matches) {
-        urpas = 2;
-    }}
-
-        // เรียกฟังก์ชันครั้งแรกเมื่อโหลดหน้า
-        handleScreenSizeChange();
-
-        // เพิ่ม Event Listener เพื่อตรวจจับการเปลี่ยนแปลงขนาดหน้าจอ
-        window.addEventListener("resize", handleScreenSizeChange);
-
-        charactersX = charactersDY = score =  0;
+        charactersX = charactersDY = score = bestScore = 0;
         characterSize = 100;
         pipeWidth = topPipeBottomY = 50;
         interval = 17; // speed
         charactersY = pipeGap = 200;
         canvasSize = pipeX = 600;
-        bestScore = 0;
+
+        let gameLoop;
 
         const gameLoopFunc = () => {
-            
             context.drawImage(background, 0, 0, canvasSize, canvasSize); // วาดรูปภาพพื้นหลัง
             context.drawImage(characters, charactersX, charactersY, characterSize, characterSize); // วาด santa
             charactersY -= charactersDY -= 0.5; // Gravity
@@ -79,16 +65,14 @@
             bestScore = bestScore < score ? score : bestScore; // New best score
             context.fillText(`Best: ${bestScore}`, 10, 25); // Draw best score
 
+            // Check collision
             if (((charactersY < topPipeBottomY || charactersY > topPipeBottomY + pipeGap) && pipeX < characterSize)
             || charactersY > canvasSize) {
-            if (score > bestScore) {
-             bestScore = score;
-            }
-            restartM();
+                restartM();
             }
         };
 
-        let gameLoop = setInterval(gameLoopFunc, interval);
+        c.onclick = () => { charactersDY = 8; } // ทำให้ Flappy Santa กระโดดขึ้น
 
         function ifno() {
             let modal = document.getElementById('myModal');
@@ -98,18 +82,16 @@
         function ifyes() {
             let modal = document.getElementById('myModal');
             modal.style.display = "none";
-            
-            charactersX = charactersDY = score = 0;
-            characterSize = 100;
-            pipeWidth = topPipeBottomY = 50;
-            interval = 17; // speed
-            charactersY = pipeGap = 200;
-            canvasSize = pipeX = 600;
-            
 
-            charactersDY = 8; // ทำให้ Flappy Santa กระโดดขึ้น
+            charactersX = charactersDY = score = 0;
+            charactersY = pipeGap = 200;
+            pipeX = canvasSize;
+
             gameLoop = setInterval(gameLoopFunc, interval);
         }
+
+        // เรียกฟังก์ชันครั้งแรกเมื่อโหลดหน้า
+        ifyes();
     </script>
     <script src="flappy.js"></script>
 </body>
