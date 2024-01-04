@@ -40,3 +40,13 @@ button {
     color: black;
     width: 40%;
 }
+
+@media only screen and (max-width: 414px) {
+   button {
+    font-size: 15px;
+    width: 60%;
+   }
+   #c{
+    width: 90%;
+   }
+}
